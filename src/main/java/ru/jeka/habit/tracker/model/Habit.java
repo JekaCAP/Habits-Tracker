@@ -1,5 +1,6 @@
 package ru.jeka.habit.tracker.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,20 +22,16 @@ public class Habit {
     private int completedCount;
 
     // Связь "один ко многим" для подпривычек
-    @OneToMany(mappedBy = "parentHabit", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Habit> subHabits = new ArrayList<>();
+    @OneToMany(mappedBy = "habit", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<SubHabit> subHabits = new ArrayList<>();
 
-    // Связь "многие к одному" для родительской привычки
-    @ManyToOne
-    @JoinColumn(name = "parent_habit_id")
-    private Habit parentHabit;
-
-    public void incrementCompleted() {
-        completedCount++;
+    public void addSubHabit(SubHabit subHabit) {
+        subHabits.add(subHabit);
+        subHabit.setHabit(this);  // Устанавливаем родительскую привычку для подпривычки
     }
 
-    public void addSubHabit(Habit habit) {
-        subHabits.add(habit);
-        habit.setParentHabit(this);  // Устанавливаем родительскую привычку для подпривычки
+    public void incrementCompleted() {
+        this.completedCount++;
     }
 }
