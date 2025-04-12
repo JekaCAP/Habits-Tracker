@@ -1,5 +1,6 @@
 package ru.jeka.habit.tracker.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.jeka.habit.tracker.Service.HabitService;
 import ru.jeka.habit.tracker.model.Habit;
@@ -27,8 +28,9 @@ public class HabitController {
     }
 
     @PutMapping("/{id}/complete")
-    public void markHabitCompleted(@PathVariable long id) {
+    public ResponseEntity<Void> markHabitCompleted(@PathVariable long id) {
         habitService.completeHabit(id);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")

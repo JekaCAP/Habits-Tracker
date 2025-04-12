@@ -26,4 +26,8 @@ public class SubHabit {
     public void incrementCompleted() {
         completedCount++;
     }
+
+    public AppUser getUser() {
+        return habit.getUser();  // Получаем пользователя через привычку
+    }
 }

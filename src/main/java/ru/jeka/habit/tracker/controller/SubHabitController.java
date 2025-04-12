@@ -41,7 +41,7 @@ public class SubHabitController {
         subHabitService.completeSubHabit(subHabitId);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{subHabitId}")
     public void deleteSubHabit(@PathVariable Long subHabitId) {
         subHabitService.deleteSubHabit(subHabitId);
     }
