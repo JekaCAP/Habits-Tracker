@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: jeka
+      POSTGRES_DB: habit_tracker
+    ports:
+      - "5433:5432"  # Проброс порта
+    volumes:
+      - postgres-data:/var/lib/postgresql/data  # Настройка volume
+
+volumes:
+  postgres-data:  # Создание volume для хранения данных
