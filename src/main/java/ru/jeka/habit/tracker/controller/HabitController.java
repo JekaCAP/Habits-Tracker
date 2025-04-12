@@ -30,4 +30,9 @@ public class HabitController {
     public void markHabitCompleted(@PathVariable long id) {
         habitService.completeHabit(id);
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteHabit(@PathVariable long id) {
+        habitService.deleteHabit(id);
+    }
 }

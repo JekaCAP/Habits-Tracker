@@ -1,5 +1,6 @@
 package ru.jeka.habit.tracker.Service;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.jeka.habit.tracker.model.Habit;
 import ru.jeka.habit.tracker.model.SubHabit;
@@ -37,6 +38,10 @@ public class HabitService {
     }
 
     public Habit addHabit(Habit habit) {
+        // Проверка на уникальность имени привычки
+        if (habitRepository.existsByName(habit.getName())) {
+            throw new IllegalArgumentException("Привычка с таким именем уже существует");
+        }
         return habitRepository.save(habit);
     }
 
@@ -62,8 +67,15 @@ public class HabitService {
         subHabitRepository.save(subHabit);
     }
 
+    public void deleteHabit(Long id) {
+        Habit habit = habitRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Habit not found"));
+        habitRepository.delete(habit);
+    }
+
     public Habit getHabitById(Long id) {
         return habitRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Habit not found"));
     }
 }
+

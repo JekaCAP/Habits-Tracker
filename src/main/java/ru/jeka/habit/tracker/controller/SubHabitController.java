@@ -1,6 +1,7 @@
 package ru.jeka.habit.tracker.controller;
 
 import org.springframework.web.bind.annotation.*;
+import ru.jeka.habit.tracker.Service.HabitService;
 import ru.jeka.habit.tracker.Service.SubHabitService;
 import ru.jeka.habit.tracker.model.SubHabit;
 
@@ -38,5 +39,10 @@ public class SubHabitController {
     @PutMapping("/{subHabitId}/complete")
     public void completeSubHabit(@PathVariable Long subHabitId) {
         subHabitService.completeSubHabit(subHabitId);
+    }
+
+    @DeleteMapping
+    public void deleteSubHabit(@PathVariable Long subHabitId) {
+        subHabitService.deleteSubHabit(subHabitId);
     }
 }
