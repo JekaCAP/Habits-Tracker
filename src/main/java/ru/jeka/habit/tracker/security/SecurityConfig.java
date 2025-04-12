@@ -6,7 +6,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -15,45 +14,37 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final CustomUserDetailsService userDetailsService;
+    private final ru.jeka.habit.tracker.service.CustomUserDetailsService userDetailsService;
 
-    public SecurityConfig(CustomUserDetailsService userDetailsService) {
+    public SecurityConfig(ru.jeka.habit.tracker.service.CustomUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
-    // Настройка правил безопасности для URL и страниц
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeRequests()
-                .requestMatchers("/login", "/signup").permitAll()  // Делаем доступными страницы логина и регистрации
-                .requestMatchers("/admin/**").hasRole("ADMIN")    // Только для администраторов
-                .requestMatchers("/user/**").hasRole("USER")      // Только для обычных пользователей
-                .anyRequest().authenticated()                 // Все остальные страницы требуют авторизации
+                .authorizeHttpRequests()
+                .requestMatchers("/login", "/register", "/home").permitAll()  // Разрешаем доступ к этим страницам
+                .requestMatchers("/admin/**").hasRole("ADMIN")  // Страницы только для администраторов
+                .anyRequest().authenticated()  // Все остальные страницы требуют авторизации
                 .and()
                 .formLogin()
-                .loginPage("/login")  // Страница логина
-                .permitAll()           // Доступность страницы логина
-                .defaultSuccessUrl("/user/home", true)  // Редирект после успешного логина
+                .loginPage("/login")  // Страница входа
+                .loginProcessingUrl("/login")  // URL для отправки данных авторизации
+                .defaultSuccessUrl("/home", true)  // Перенаправление на главную страницу после успешной авторизации
+                .permitAll()
                 .and()
                 .logout()
-                .permitAll()  // Доступность выхода
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED) // Политика создания сессий
-                .maximumSessions(1)  // Ограничение на количество сессий
-                .expiredUrl("/login?expired=true"); // Страница по истечении сессии
+                .permitAll();
 
         return http.build();
     }
 
-    // Настройка шифрования паролей
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // Создание AuthenticationManager
     @Bean
     public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
