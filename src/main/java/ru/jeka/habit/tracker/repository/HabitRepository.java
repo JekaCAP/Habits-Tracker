@@ -6,4 +6,5 @@ import ru.jeka.habit.tracker.model.Habit;
 
 @Repository
 public interface HabitRepository extends JpaRepository<Habit, Long> {
+    boolean existsByName(String name);
 }

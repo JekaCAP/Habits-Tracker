@@ -1,6 +1,7 @@
 package ru.jeka.habit.tracker.Service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import ru.jeka.habit.tracker.model.Habit;
 import ru.jeka.habit.tracker.model.SubHabit;
 import ru.jeka.habit.tracker.repository.HabitRepository;
@@ -37,6 +38,12 @@ public class SubHabitService {
         subHabit.setHabit(habit);  // Связываем подпривычку с основной привычкой
 
         return subHabitRepository.save(subHabit);
+    }
+
+    public void deleteSubHabit(Long habitId) {
+        SubHabit subHabit = subHabitRepository.findById(habitId)
+                .orElseThrow(() -> new IllegalArgumentException("SubHabit not found"));
+        subHabitRepository.delete(subHabit);
     }
 
     // Увеличить completedCount для подпривычки
