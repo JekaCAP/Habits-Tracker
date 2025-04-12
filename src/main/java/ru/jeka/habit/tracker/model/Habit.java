@@ -1,11 +1,9 @@
 package ru.jeka.habit.tracker.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -22,10 +20,13 @@ public class Habit {
 
     private int completedCount;
 
-    // Связь "один ко многим" для подпривычек
+    // Добавляем поле для связи с пользователем
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")  // Связь с таблицей User
+    private AppUser user;  // Связь с пользователем
+
     @OneToMany(mappedBy = "habit", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonManagedReference
-    private List<SubHabit> subHabits = new ArrayList<>();
+    private List<SubHabit> subHabits;  // Подпривычки
 
     public void addSubHabit(SubHabit subHabit) {
         subHabits.add(subHabit);
