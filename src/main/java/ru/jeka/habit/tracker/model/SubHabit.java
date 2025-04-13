@@ -28,6 +28,6 @@ public class SubHabit {
     }
 
     public AppUser getUser() {
-        return habit.getUser();  // Получаем пользователя через привычку
+        return habit.getUsers();  // Получаем пользователя через привычку
     }
 }

@@ -9,29 +9,30 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import ru.jeka.habit.tracker.Service.CustomUserDetailsService;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final ru.jeka.habit.tracker.service.CustomUserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
-    public SecurityConfig(ru.jeka.habit.tracker.service.CustomUserDetailsService userDetailsService) {
+    public SecurityConfig(CustomUserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests()
+        http.csrf().disable()
+                .authorizeRequests()
                 .requestMatchers("/login", "/register", "/home").permitAll()  // Разрешаем доступ к этим страницам
-                .requestMatchers("/admin/**").hasRole("ADMIN")  // Страницы только для администраторов
                 .anyRequest().authenticated()  // Все остальные страницы требуют авторизации
                 .and()
                 .formLogin()
                 .loginPage("/login")  // Страница входа
                 .loginProcessingUrl("/login")  // URL для отправки данных авторизации
-                .defaultSuccessUrl("/home", true)  // Перенаправление на главную страницу после успешной авторизации
+                .defaultSuccessUrl("/account", true)  // Перенаправление на страницу аккаунта после успешной авторизации
+                .failureUrl("/login?error=true")  // Страница с ошибкой при неверных данных логина
                 .permitAll()
                 .and()
                 .logout()

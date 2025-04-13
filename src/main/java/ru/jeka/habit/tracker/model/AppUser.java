@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "\"user\"")
+@Table(name = "\"users\"", schema = "public")
 public class AppUser {
 
     @Id
@@ -26,11 +26,11 @@ public class AppUser {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "users", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Habit> habits;
 
     public void addHabit(Habit habit) {
         habits.add(habit);
-        habit.setUser(this);
+        habit.setUsers(this);
     }
 }

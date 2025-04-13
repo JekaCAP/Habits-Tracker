@@ -1,5 +1,6 @@
 package ru.jeka.habit.tracker.Service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import ru.jeka.habit.tracker.model.Habit;
@@ -31,27 +32,32 @@ public class SubHabitService {
     }
 
     // Добавить подпривычку и связать с основной привычкой
+    @Transactional
     public SubHabit addSubHabit(Long habitId, SubHabit subHabit) {
         Habit habit = habitRepository.findById(habitId)
                 .orElseThrow(() -> new IllegalArgumentException("Habit not found"));
 
         subHabit.setHabit(habit);  // Связываем подпривычку с основной привычкой
 
-        return subHabitRepository.save(subHabit);
-    }
-
-    public void deleteSubHabit(Long habitId) {
-        SubHabit subHabit = subHabitRepository.findById(habitId)
-                .orElseThrow(() -> new IllegalArgumentException("SubHabit not found"));
-        subHabitRepository.delete(subHabit);
+        return subHabitRepository.save(subHabit);  // Сохраняем подпривычку
     }
 
     // Увеличить completedCount для подпривычки
+    @Transactional
     public void completeSubHabit(Long subHabitId) {
         SubHabit subHabit = subHabitRepository.findById(subHabitId)
                 .orElseThrow(() -> new IllegalArgumentException("SubHabit not found"));
 
         subHabit.incrementCompleted();
-        subHabitRepository.save(subHabit);
+        subHabitRepository.save(subHabit);  // Сохраняем обновленную подпривычку
+    }
+
+    // Удалить подпривычку
+    @Transactional
+    public void deleteSubHabit(Long subHabitId) {
+        SubHabit subHabit = subHabitRepository.findById(subHabitId)
+                .orElseThrow(() -> new IllegalArgumentException("SubHabit not found"));
+
+        subHabitRepository.delete(subHabit);  // Удаляем подпривычку
     }
 }

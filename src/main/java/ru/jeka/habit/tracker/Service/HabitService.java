@@ -1,5 +1,6 @@
 package ru.jeka.habit.tracker.Service;
 
+import jakarta.transaction.Transactional;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import ru.jeka.habit.tracker.model.Habit;
@@ -20,6 +21,7 @@ public class HabitService {
         this.subHabitRepository = subHabitRepository;
     }
 
+    @Transactional
     public SubHabit addSubHabit(Long habitId, SubHabit subHabit) {
         Habit habit = habitRepository.findById(habitId)
                 .orElseThrow(() -> new IllegalArgumentException("Habit not found"));
@@ -37,25 +39,29 @@ public class HabitService {
         return habitRepository.findAll();
     }
 
+    @Transactional
     public Habit addHabit(Habit habit) {
-        // Проверка на уникальность имени привычки
+        if (habit == null || habit.getName() == null || habit.getName().trim().isEmpty()) {
+            throw new IllegalArgumentException("Имя привычки не может быть пустым");
+        }
+
+        // Проверка на уникальность
         if (habitRepository.existsByName(habit.getName())) {
             throw new IllegalArgumentException("Привычка с таким именем уже существует");
         }
+
         return habitRepository.save(habit);
     }
 
     public void completeHabit(Long id) {
-        Optional<Habit> habitOptional = habitRepository.findById(id);
-        if (habitOptional.isPresent()) {
-            Habit habit = habitOptional.get();
-            habit.incrementCompleted();
-            habitRepository.save(habit);
-        } else {
-            throw new RuntimeException("Habit not found");
-        }
+        Habit habit = habitRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Habit not found"));
+
+        habit.incrementCompleted();
+        habitRepository.save(habit);
     }
 
+    @Transactional
     public void completedSubHabit(Long habitId, Long subHabitId) {
         Habit habit = habitRepository.findById(habitId)
                 .orElseThrow(() -> new IllegalArgumentException("Habit not found"));
@@ -64,13 +70,15 @@ public class HabitService {
                 .orElseThrow(() -> new IllegalArgumentException("SubHabit not found"));
 
         subHabit.incrementCompleted();
-        subHabitRepository.save(subHabit);
+        subHabitRepository.save(subHabit);  // Обновление подпривычки
     }
 
+    @Transactional
     public void deleteHabit(Long id) {
         Habit habit = habitRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Habit not found"));
-        habitRepository.delete(habit);
+
+        habitRepository.delete(habit);  // Удаляем привычку из базы данных
     }
 
     public Habit getHabitById(Long id) {

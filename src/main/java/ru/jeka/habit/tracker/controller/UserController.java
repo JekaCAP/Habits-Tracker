@@ -31,7 +31,7 @@ public class UserController {
     // Создание новой привычки для текущего пользователя
     @PostMapping("/habits")
     public Habit addHabit(@RequestBody Habit habit, @AuthenticationPrincipal AppUser user) {
-        habit.setUser(user);  // Связываем привычку с текущим пользователем
+        habit.setUsers(user);  // Связываем привычку с текущим пользователем
         return habitService.addHabit(habit);
     }
 }

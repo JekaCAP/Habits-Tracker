@@ -23,7 +23,7 @@ public class Habit {
     // Добавляем поле для связи с пользователем
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")  // Связь с таблицей User
-    private AppUser user;  // Связь с пользователем
+    private AppUser users;  // Связь с пользователем
 
     @OneToMany(mappedBy = "habit", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SubHabit> subHabits;  // Подпривычки
