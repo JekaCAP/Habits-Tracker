@@ -8,5 +8,6 @@ import java.util.List;
 
 @Repository
 public interface SubHabitRepository extends JpaRepository<SubHabit, Long> {
-    List<SubHabit> findByHabitId(Long habitId);  // Метод для поиска подпривычек по ID основной привычки
+    List<SubHabit> findByName(String name);
+    List<SubHabit> findByHabitId(Long habitId); // Метод для поиска подпривычек по ID основной привычки
 }

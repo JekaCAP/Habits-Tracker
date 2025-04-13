@@ -1,5 +1,6 @@
 package ru.jeka.habit.tracker.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.jeka.habit.tracker.Service.HabitService;
 import ru.jeka.habit.tracker.Service.SubHabitService;
@@ -31,18 +32,21 @@ public class SubHabitController {
 
     // Создать подпривычку и связать её с основной привычкой
     @PostMapping("/{habitId}")
-    public SubHabit addSubHabit(@PathVariable Long habitId, @RequestBody SubHabit subHabit) {
-        return subHabitService.addSubHabit(habitId, subHabit);
+    public ResponseEntity<SubHabit> addSubHabit(@PathVariable Long habitId, @RequestBody SubHabit subHabit) {
+        SubHabit createdSubHabit = subHabitService.addSubHabit(habitId, subHabit);
+        return ResponseEntity.ok(createdSubHabit);
     }
 
     // Увеличить completedCount подпривычки
     @PutMapping("/{subHabitId}/complete")
-    public void completeSubHabit(@PathVariable Long subHabitId) {
+    public ResponseEntity<Void> completeSubHabit(@PathVariable Long subHabitId) {
         subHabitService.completeSubHabit(subHabitId);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{subHabitId}")
-    public void deleteSubHabit(@PathVariable Long subHabitId) {
+    public ResponseEntity<Void> deleteSubHabit(@PathVariable Long subHabitId) {
         subHabitService.deleteSubHabit(subHabitId);
+        return ResponseEntity.ok().build();
     }
 }

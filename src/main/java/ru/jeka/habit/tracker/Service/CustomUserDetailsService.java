@@ -1,4 +1,4 @@
-package ru.jeka.habit.tracker.security;
+package ru.jeka.habit.tracker.Service;
 
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

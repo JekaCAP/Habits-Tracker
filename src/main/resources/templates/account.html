@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account</title>
+    <style>
+        /* Общие стили */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        h2 {
+            margin-top: 20px;
+            color: #555;
+        }
+
+        .habit-form,
+        .subhabit-form {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+        }
+
+        .habit-form input,
+        .subhabit-form input {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .habit-form button,
+        .subhabit-form button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .habit-form button:hover,
+        .subhabit-form button:hover {
+            background-color: #0056b3;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 10px;
+            margin-bottom: 10px;
+            background-color: #f9f9f9;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        li span {
+            font-weight: bold;
+        }
+
+        .habit-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .habit-actions form {
+            display: inline;
+        }
+
+        .habit-actions button {
+            padding: 5px 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .habit-actions button:hover {
+            background-color: #218838;
+        }
+
+        .subhabit-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .subhabit-actions form {
+            display: inline;
+        }
+
+        .subhabit-actions button {
+            padding: 5px 10px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .subhabit-actions button:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Welcome, <span th:text="${username}"></span></h1>
+
+    <h2>My Habits</h2>
+
+    <form class="habit-form" action="/account/habits" method="post">
+        <input type="text" name="habitName" placeholder="New Habit" required>
+        <button type="submit">Create Habit</button>
+    </form>
+
+    <ul>
+        <li th:each="habit : ${habits}">
+            <div>
+                <span th:text="${habit.name}"></span> (Completed: <span th:text="${habit.completedCount}"></span>)
+            </div>
+            <div class="habit-actions">
+                <!-- Increment -->
+                <form th:action="@{/account/habits/{id}/increment(id=${habit.id})}" method="post">
+                    <button type="submit">Increment</button>
+                </form>
+
+                <!-- Delete -->
+                <form th:action="@{/account/habits/{id}/delete(id=${habit.id})}" method="post">
+                    <button type="submit">Delete</button>
+                </form>
+            </div>
+
+            <!-- SubHabits -->
+            <ul>
+                <li th:each="subHabit : ${habit.subHabits}">
+                    <div>
+                        <span th:text="${subHabit.name}"></span> (Completed: <span th:text="${subHabit.completedCount}"></span>)
+                    </div>
+                    <div class="subhabit-actions">
+                        <!-- Increment SubHabit -->
+                        <form th:action="@{/account/subhabits/{id}/increment(id=${subHabit.id})}" method="post">
+                            <button type="submit">+</button>
+                        </form>
+
+                        <!-- Delete SubHabit -->
+                        <form th:action="@{/account/subhabits/{id}/delete(id=${subHabit.id})}" method="post">
+                            <button type="submit">X</button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+
+            <!-- Add SubHabit -->
+            <form class="subhabit-form" th:action="@{/account/subhabits/{id}(id=${habit.id})}" method="post">
+                <input type="text" name="subHabitName" placeholder="New SubHabit" required>
+                <button type="submit">Add SubHabit</button>
+            </form>
+        </li>
+    </ul>
+</div>
+</body>
+</html>
