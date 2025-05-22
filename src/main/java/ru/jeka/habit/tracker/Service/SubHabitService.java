@@ -2,7 +2,6 @@ package ru.jeka.habit.tracker.Service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import ru.jeka.habit.tracker.model.Habit;
 import ru.jeka.habit.tracker.model.SubHabit;
 import ru.jeka.habit.tracker.repository.HabitRepository;
